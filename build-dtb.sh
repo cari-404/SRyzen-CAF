@@ -22,26 +22,6 @@ export SUBARCH=arm64
 AK3_DIR=$KERNEL_DIR/ak3-$DEVICE
 KERNEL_IMG=$KERNEL_DIR/out/arch/arm64/boot/Image.gz
 
-# Telegram setup
-push_message() {
-    curl -s -X POST \
-        https://api.telegram.org/bot"{$BOT_TOKEN}"/sendMessage \
-        -d chat_id="${CHAT_ID}" \
-        -d text="$1" \
-        -d "parse_mode=html" \
-        -d "disable_web_page_preview=true"
-}
-
-push_document() {
-    curl -s -X POST \
-        https://api.telegram.org/bot"{$BOT_TOKEN}"/sendDocument \
-        -F chat_id="${CHAT_ID}" \
-        -F document=@"$1" \
-        -F caption="$2" \
-        -F "parse_mode=html" \
-        -F "disable_web_page_preview=true"
-}
-
 # Export defconfig
 make O=out super-"$DEVICE"-oldcam_defconfig
 
