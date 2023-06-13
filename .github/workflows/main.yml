@@ -8,9 +8,6 @@ jobs:
   build:
     runs-on: ubuntu-22.04
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
       - name: Build SuperRyzen Kernel
         run: |
           wget https://raw.githubusercontent.com/cari-404/SRyzen-CAF/caf/build-start.sh
