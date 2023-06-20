@@ -1364,7 +1364,6 @@ static void unregister_adhoc(struct msm_bus_client_handle *cl)
 	remove_path(cl->mas_dev, cl->slv, cl->cur_act_ib, cl->cur_act_ab,
 				cl->first_hop, cl->active_only);
 	commit_data();
-	msm_bus_dbg_remove_client(cl);
 	kfree(cl->name);
 	kfree(cl);
 exit_unregister_client:
@@ -1425,7 +1424,6 @@ register_adhoc(uint32_t mas, uint32_t slv, char *name, bool active_only)
 
 	MSM_BUS_DBG("%s:Client handle %p %s", __func__, client,
 						client->name);
-	msm_bus_dbg_add_client(client);
 exit_register:
 	rt_mutex_unlock(&msm_bus_adhoc_lock);
 	return client;
