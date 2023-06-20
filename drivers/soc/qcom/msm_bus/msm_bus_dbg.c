@@ -352,6 +352,8 @@ int msm_bus_dbg_add_client(const struct msm_bus_client_handle *pdata)
 	return 0;
 }
 
+int msm_bus_dbg_rec_transaction(const struct msm_bus_client_handle *pdata,
+						u64 ab, u64 ib)
 {
 	struct msm_bus_cldata *cldata;
 	int i;
