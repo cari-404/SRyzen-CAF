@@ -332,12 +332,6 @@ int msm_bus_dbg_rec_transaction(const struct msm_bus_client_handle *pdata,
 void msm_bus_dbg_remove_client(const struct msm_bus_client_handle *pdata);
 
 #else
-static inline int
-msm_bus_dbg_rec_transaction_test(const struct msm_bus_client_handle *pdata,
-						u64 ab, u64 ib)
-{
-	return 0;
-}
 
 #endif
 
