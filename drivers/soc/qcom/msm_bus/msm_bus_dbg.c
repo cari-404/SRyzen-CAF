@@ -335,6 +335,8 @@ struct dentry *msm_bus_dbg_create(const char *name, mode_t mode,
 		&client_data_fops);
 }
 
+int msm_bus_dbg_add_client(const struct msm_bus_client_handle *pdata)
+
 {
 	struct msm_bus_cldata *cldata;
 
@@ -807,7 +809,8 @@ static const struct file_operations msm_bus_dbg_dump_clients_fops = {
  * @index: The current index or operation to be performed
  * @clid: Client handle obtained during registration
  */
-
+void msm_bus_dbg_client_data(struct msm_bus_scale_pdata *pdata, int index,
+	uint32_t clid)
 {
 	struct dentry *file = NULL;
 
@@ -834,6 +837,8 @@ EXPORT_SYMBOL(msm_bus_dbg_client_data);
  * @ntslaves: Number of tiered slaves attached to fabric
  * @op: Operation to be performed
  */
+void msm_bus_dbg_commit_data(const char *fabname, void *cdata,
+	int nmasters, int nslaves, int ntslaves, int op)
 {
 	struct dentry *file = NULL;
 
