@@ -414,6 +414,7 @@ int msm_bus_dbg_rec_transaction(const struct msm_bus_client_handle *pdata,
 	return i;
 }
 
+void msm_bus_dbg_remove_client(const struct msm_bus_client_handle *pdata)
 {
 	struct msm_bus_cldata *cldata = NULL;
 
