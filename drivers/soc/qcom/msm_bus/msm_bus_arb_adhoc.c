@@ -25,8 +25,6 @@
 #define NUM_LNODES	3
 #define MAX_STR_CL	50
 
-#define DEBUG_REC_TRANSACTION 0
-
 struct bus_search_type {
 	struct list_head link;
 	struct list_head node_list;
@@ -902,6 +900,7 @@ static void unregister_client_adhoc(uint32_t cl)
 						pdata->active_only);
 	}
 	commit_data();
+	msm_bus_dbg_client_data(client->pdata, MSM_BUS_DBG_UNREGISTER, cl);
 	kfree(client->src_pnode);
 	kfree(client->src_devs);
 	kfree(client);
@@ -1036,6 +1035,8 @@ static uint32_t register_client_adhoc(struct msm_bus_scale_pdata *pdata)
 	}
 
 	handle = gen_handle(client);
+	msm_bus_dbg_client_data(client->pdata, MSM_BUS_DBG_REGISTER,
+					handle);
 	MSM_BUS_DBG("%s:Client handle %d %s", __func__, handle,
 						client->pdata->name);
 	rt_mutex_unlock(&msm_bus_adhoc_lock);
@@ -1160,6 +1161,7 @@ static int update_context(uint32_t cl, bool active_only,
 
 	pdata->active_only = active_only;
 
+	msm_bus_dbg_client_data(client->pdata, ctx_idx , cl);
 	ret = update_client_paths(client, false, ctx_idx);
 	if (ret) {
 		pr_err("%s: Err updating path\n", __func__);
@@ -1222,6 +1224,7 @@ static int update_request_adhoc(uint32_t cl, unsigned int index)
 
 	MSM_BUS_DBG("%s: cl: %u index: %d curr: %d num_paths: %d\n", __func__,
 		cl, index, client->curr, client->pdata->usecase->num_paths);
+	msm_bus_dbg_client_data(client->pdata, index , cl);
 	ret = update_client_paths(client, log_transaction, index);
 	if (ret) {
 		pr_err("%s: Err updating path\n", __func__);
@@ -1261,6 +1264,8 @@ static int update_bw_adhoc(struct msm_bus_client_handle *cl, u64 ab, u64 ib)
 
 	if (!strcmp(test_cl, cl->name))
 		log_transaction = true;
+
+	msm_bus_dbg_rec_transaction(cl, ab, ib);
 
 	if ((cl->cur_act_ib == ib) && (cl->cur_act_ab == ab)) {
 		MSM_BUS_DBG("%s:no change in request", cl->name);
@@ -1321,6 +1326,10 @@ static int update_bw_context(struct msm_bus_client_handle *cl, u64 act_ab,
 
 	if (!slp_ab && !slp_ib)
 		cl->active_only = true;
+	msm_bus_dbg_rec_transaction(cl, cl->cur_act_ab, cl->cur_slp_ib);
+	ret = update_path(cl->mas_dev, cl->slv, act_ib, act_ab, slp_ib, slp_ab,
+				cl->cur_act_ab, cl->cur_act_ab,  cl->first_hop,
+				cl->active_only);
 	if (ret) {
 		MSM_BUS_ERR("%s: Update path failed! %d active_only %d\n",
 				__func__, ret, cl->active_only);
@@ -1351,6 +1360,7 @@ static void unregister_adhoc(struct msm_bus_client_handle *cl)
 	remove_path(cl->mas_dev, cl->slv, cl->cur_act_ib, cl->cur_act_ab,
 				cl->first_hop, cl->active_only);
 	commit_data();
+	msm_bus_dbg_remove_client(cl);
 	kfree(cl->name);
 	kfree(cl);
 exit_unregister_client:
@@ -1411,6 +1421,7 @@ register_adhoc(uint32_t mas, uint32_t slv, char *name, bool active_only)
 
 	MSM_BUS_DBG("%s:Client handle %p %s", __func__, client,
 						client->name);
+	msm_bus_dbg_add_client(client);
 exit_register:
 	rt_mutex_unlock(&msm_bus_adhoc_lock);
 	return client;
