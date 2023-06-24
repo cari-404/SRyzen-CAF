@@ -42,3 +42,9 @@ jobs:
         with:
           path: kernel/kernel-done/*
           
+      - name: Upload a Build Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: oldqti
+          path: kernel/kernel-done/SuperRyzen-OSS_tulip_v10_oldcam.zip
+          
