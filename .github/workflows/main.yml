@@ -60,7 +60,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: v10 with Kernel SU v${{ env.KSU_VERSION }}
+          tag_name: v10-KSU_v${{ env.KSU_VERSION }}
           release_name: Release version With KSU v${{ env.KSU_VERSION }}
 
       - name: Upload Release Artifact
