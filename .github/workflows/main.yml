@@ -4,6 +4,9 @@ on:
   push:
     branches: caf
 
+env:
+  KSU_VERSION: "0.6.8"
+
 jobs:
   build:
     runs-on: ubuntu-22.04
@@ -15,7 +18,7 @@ jobs:
           cd kernel
           mkdir kernel-done
           wget https://raw.githubusercontent.com/cari-404/SRyzen-CAF/caf/build-dtb.sh
-          curl -LSs "https://raw.githubusercontent.com/tiann/KernelSU/main/kernel/setup.sh" | bash -
+          curl -LSs "https://raw.githubusercontent.com/tiann/KernelSU/main/kernel/setup.sh" | bash -s v${{ env.KSU_VERSION }}
           bash build-dtb.sh tulip clang qpnp
           git apply qti.patch
           bash build-dtb.sh tulip clang qti
@@ -47,4 +50,55 @@ jobs:
         with:
           name: oldqti
           path: kernel/kernel-done/SuperRyzen-OSS_tulip_v10_oldcam.zip
+          
+      - name: Create GitHub Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v10 with Kernel SU v${{ env.KSU_VERSION }}
+          release_name: Release version With KSU v${{ env.KSU_VERSION }}
+
+      - name: Upload Release Artifact
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./kernel/kernel-done/SuperRyzen-OSS_tulip_v10_oldcam.zip
+          asset_name: SuperRyzen-OSS_tulip_v10_oldcam_ksu_v${{ env.KSU_VERSION }}.zip
+          asset_content_type: application/zip
+
+      - name: Upload Release Artifact
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./kernel/kernel-done/SuperRyzen-OSS_tulip_v10_newcam.zip
+          asset_name: SuperRyzen-OSS_tulip_v10_newcam_ksu_v${{ env.KSU_VERSION }}.zip
+          asset_content_type: application/zip
+
+      - name: Upload Release Artifact
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./kernel/kernel-done/SuperRyzen-OSS_tulip_v10-OC_newcam.zip
+          asset_name: SuperRyzen-OSS_tulip_v10-OC_newcam_ksu_v${{ env.KSU_VERSION }}.zip
+          asset_content_type: application/zip
+
+      - name: Upload Release Artifact
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./kernel/kernel-done/SuperRyzen-OSS_tulip_v10-OC_oldcam.zip
+          asset_name: SuperRyzen-OSS_tulip_v10-OC_oldcam_ksu_v${{ env.KSU_VERSION }}.zip
+          asset_content_type: application/zip
+
+
           
