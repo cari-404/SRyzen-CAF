@@ -5,7 +5,7 @@ on:
     branches: caf
 
 env:
-  KSU_VERSION: "0.6.8"
+  KSU_VERSION: "0.6.9"
 
 jobs:
   build:
